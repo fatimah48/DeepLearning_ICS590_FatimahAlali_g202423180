@@ -1,67 +1,102 @@
 # **Preliminary Project Information**
-**Student Name:** Fatimah Alali-g202423180
+**Student Name:** Fatimah Alali - g202423180
 
 **Project title:** Graph-Guided Story Generation and Semantic Enrichment with Large Vision-Language Models
 
-**Author names for refrence paper:** Fan Lu, Wei Wu, Kecheng Zheng, et al.
+**Author names for reference paper:** Fan Lu, Wei Wu, Kecheng Zheng, et al.
 
-**Date:** September 25, 2024
 ## Problem Statement
-The current paper ([Benchmarking Large Vision-Language Models via Directed Scene Graph for Comprehensive Image Captioning](https://openaccess.thecvf.com/content/CVPR2025/papers/Lu_Benchmarking_Large_Vision-Language_Models_via_Directed_Scene_Graph_for_Comprehensive_CVPR_2025_paper.pdf))
-employs Large Vision-Language Models (LVLMs) that excel at generating comprehensive single-image captions. However, it lack in creation coherent, emotionally engaging multi-sentence stories that capture both visual details and narrative flow.
-The benchmark for the paper achieved a good result in  scene graph annotations for evaluating comprehensive image captioning. 
 
-**The gap found in the current benchmark are:**
+The current paper ([Benchmarking Large Vision-Language Models via Directed Scene Graph for Comprehensive Image Captioning](https://openaccess.thecvf.com/content/CVPR2025/papers/Lu_Benchmarking_Large_Vision-Language_Models_via_Directed_Scene_Graph_for_Comprehensive_CVPR_2025_paper.pdf)) employs Large Vision-Language Models (LVLMs) that excel at generating comprehensive single-image captions. However, it lacks in creation of coherent, emotionally engaging multi-sentence stories that capture both visual details and narrative flow.
 
-1.Temporal Narrative Structure: Existing models generate static descriptions rather than progressive storytelling
+The benchmark for the paper achieved good results in scene graph annotations for evaluating comprehensive image captioning.
 
-2.Emotional Context Integration: Current approaches focus on visual accuracy but lack emotional depth and contextual richness
+**The gaps found in the current benchmark are:**
 
-3.Multi-Sentence Coherence: No systematic framework exists for maintaining narrative consistency across multiple sentences
+1. **Temporal Narrative Structure:** Existing models generate static descriptions rather than progressive storytelling
 
-4.Structured Evaluation: Limited metrics for assessing story quality beyond traditional captioning measures
+2. **Emotional Context Integration:** Current approaches focus on visual accuracy but lack emotional depth and contextual richness
+
+3. **Multi-Sentence Coherence:** No systematic framework exists for maintaining narrative consistency across multiple sentences
+
+4. **Structured Evaluation:** Limited metrics for assessing story quality beyond traditional captioning measures
+
+5. **Scene Graph Utilization:** Scene graphs used only for evaluation, not as generative input to model architectures
+
+---
 
 ## Research Idea & Brief Overview
 
-The main aim of this project is the extension of current paper framework by developing a novel approach for scene graph-conditioned story generation. The core innovation lies in transforming static visual scene graphs (objects, attributes, relations) into dynamic narrative structures enriched with emotional and contextual semantics.The expected Key Technical Contributions lies on these points:
+The main aim of this project is the extension of current paper framework by developing a novel deep learning approach for scene graph-conditioned story generation. The core innovation lies in transforming static visual scene graphs (objects, attributes, relations) into dynamic narrative structures through **learned multimodal representations**.
 
-**Turning Scene Graphs into Stories**
+**Key Technical Contributions:**
 
-Using special network to read detailed scene descriptions, A temporal reasoning module helps plan how the story moves forward and  A story writer creates multiple connected sentences so the story feels smooth.
+**1. Graph Neural Network Scene Encoder**
+- Using Graph Attention Network (GAT) to encode scene graph structure
+- Learning object relationships through trainable attention mechanisms
+- Generating 128D graph embeddings capturing structural information
 
-**Adding Emotions and Context**
+**2. Cross-Modal Fusion Module** 
+- Fusing visual features (BLIP) with graph-structured information (GNN)
+- Implementing trainable gating mechanism for adaptive fusion
+- Producing 256D multimodal representations
 
-Enriching scene descriptions with emotional details like mood and character feelings, reasoning system figures out the overall atmosphere of the story from the visuals and the system also tracks how characters change from one part of the story to the next.
+**3. Feature Projection for LLM Conditioning** 
+- Mapping fused embeddings into LLM embedding space (4096D)
+- Enabling soft prompting with continuous learned features
+- Conditioning Mistral-7B on visual-graph representations
 
-**Better Ways to Judge Story Quality**
+**4. Comprehensive Evaluation Framework**
+- Measuring story accuracy using CompreCap's object and relation scores
+- Adding narrative quality metrics (BLEU, BERTScore, coherence)
+- Implementing graph consistency checking (novel metric)
 
-Measuring story accuracy using CompreCap’s object and relation scores, adding new ways to check story flow, emotions, and engagement.Also, include human reviews to see if people enjoy and understand the stories. 
 
-**The expected methodolgy planned to follow** ddivided into 3 main steps. First is the foundation by reproducing the current paper framework (CompreCap), analyze scene graph structures. Second is the architecture development phase where the pipline of scene-graph-to-story generation designed and implmented. Third phase is developing emotional annotation schema and context inference. Lastly is the training & evaluation in which it will be multi-stage training with comprehensive assessment
+**The expected methodology planned to follow** is divided into 3 main phases:
 
-**The Expected impacted inteded** to be achieved in terms of **technical**, **academic** and **practical** impact: 
+**Phase 1: Foundation**
+- Reproduce current paper framework (CompreCap)
+- Analyze scene graph structures
+- Load and process dataset (50 samples)
 
--**Technical:** First systematic approach to story generation using structured visual scene graphs
+**Phase 2: Architecture Development**
+- Design and implement GNN encoder for scene graphs
+- Develop cross-modal fusion module
+- Create feature projection layer for LLM conditioning
+- Establish end-to-end differentiable pipeline
 
--**Academic:** Novel evaluation framework for narrative generation from images
+**Phase 3: Generation & Evaluation**
+- Generate stories using learned multimodal conditioning
+- Conduct ablation studies to prove component contributions
+- Evaluate with both factual and narrative quality metrics
+- Compare against baseline models
 
--**Practical:** Enhanced human-AI interaction through more engaging visual storytelling
+**The Expected impact intended** to be achieved in terms of **technical**, **academic** and **practical** impact:
+
+-**Technical:** First systematic approach to story generation using GNN-encoded visual scene graphs with learned multimodal fusion
+
+-**Academic:** Novel evaluation framework for narrative generation from structured visual representations; extends CompreCap from evaluation-only to generative framework
+
+-**Practical:** Enhanced human-AI interaction through more engaging visual storytelling; applications in accessibility, education, and creative tools
 
 **Resources & Datasets:**
 
--**Primary:** CompreCap dataset (560 images with detailed scene graphs)
+-**Primary:** CompreCap dataset (50 images subset for proof-of-concept; 40 train / 10 test split)
 
--**Supplementary:** Visual Genome, COCO datasets for broader evaluation
+-**Supplementary:** Visual Genome, COCO datasets for broader evaluation (future work)
 
--**Base Models:** LLaVA-Next-34B, InternVL-Chat-V1-5 as foundation architectures
+-**Base Models:** BLIP (vision encoder), Mistral-7B-Instruct-v0.2 (language generation)
 
-**Potential challenges:**
+-**Framework:** PyTorch, PyTorch Geometric, Hugging Face Transformers
 
--Dataset size limitations (560 images may be insufficient for training)
 
--Computational requirements for multi-modal training
+**Challenges Encountered & Solutions:**
+-Dataset size limitations (560 images): Use 50-sample subset for proof-of-concept
 
--Human annotation costs for emotional enrichmen
+-Computational requirements for training:Implemented inference pipeline with frozen base models
 
-**To summarize,** this project addresses a fundamental limitation in current vision-language models while building systematically on state-of-the-art benchmarking methodology, positioning it for both academic contribution and practical impact in AI-powered storytelling applications.
+-CPU-only environment | Optimized inference with batched generation
 
+-Story quality without fine-tuning | Leveraged strong pre-trained LLM (Mistral-7B)
+
+**To summarize,** this project addresses a fundamental limitation in current vision-language models while building systematically on state-of-the-art benchmarking methodology. By implementing three novel deep learning components (GNN encoder, cross-modal fusion, and feature projection), it will demonstrate a principled approach to scene-graph-conditioned narrative generation, positioning it for both academic contribution and practical impact in AI-powered storytelling applications.
